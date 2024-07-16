@@ -1,6 +1,6 @@
 import functools
 import numpy as np
-from ..utils import rao_blackwell_ledoit_wolf
+from graphvampnets.utils import rao_blackwell_ledoit_wolf
 
 class Preprocessing:
     """ Preprocess the original trajectories to create datasets for training.
@@ -16,7 +16,6 @@ class Preprocessing:
 
     def _seq_trajs(self, data):
 
-        data = data.copy()
         if not isinstance(data, list):
             data = [data]
         for i in range(len(data)):
@@ -24,7 +23,7 @@ class Preprocessing:
         
         return data
 
-    def transform2pw(self, data):
+    def transform2pw(self, data, indices):
         """ Transform xyz coordinates data to pairwise distances data.
 
         Parameters
@@ -38,23 +37,21 @@ class Preprocessing:
             Pairwise distances data.
         """
 
-        data = self._seq_trajs(data)
-
         if not (len(data[0].shape) == 3 and data[0].shape[-1] == 3):
             raise ValueError('Please make sure the shape of each traj is [num_frames,num_atoms,3]')
         
         num_trajs = len(data)
-        num_atoms = data[0].shape[1]
+        data = [traj[:, indices, :] for traj in data]
+        num_atoms = len(indices)
+
 
         pw_data = []
         for traj in range(num_trajs):
             tmp = []
             for i in range(num_atoms-1):
-                for j in range(i+1, num_atoms):
-                    dist = np.sqrt(np.sum((data[traj][:,i,:] - data[traj][:,j,:])**2, axis=-1))
-                    tmp.append(dist)
-            pw_data.append(np.stack(tmp,axis=1))
-        
+                dist = np.sqrt(np.sum((data[traj][:,num_atoms-1,:] - data[traj][:,i,:])**2, axis=-1))
+                tmp.append(dist)
+            pw_data.append(np.stack(tmp,axis=1))      
         return pw_data if num_trajs > 1 else pw_data[0]
     
     def create_dataset(self, data, lag_time):
@@ -114,14 +111,16 @@ class Preprocessing:
         if pw_indices is None:
             pw_indices = []
             for i in range(num_atoms-1):
-                for j in range(i+1, num_atoms):
-                    pw_indices.append(np.array([i,j]))
+                pw_indices.append(np.array([num_atoms-1, i]))
             pw_indices = np.array(pw_indices)
 
-        assert len(pw_indices) == len(pw_data_frame)
+        # print(len(pw_indices))
+        # print(len(pw_data_frame))
+
+        # assert len(pw_indices) == len(pw_data_frame)
         assert int(np.min(pw_indices)) == 0
         assert int(np.max(pw_indices) + 1) == num_atoms
-        assert int(num_atoms*(num_atoms-1)/2) == len(pw_indices)
+        # assert int(num_atoms*(num_atoms-1)/2) == len(pw_indices)
 
         pw_matrix = np.zeros((num_atoms, num_atoms))
         for i in range(len(pw_data_frame)):
@@ -163,7 +162,7 @@ class Preprocessing:
             The first two columns are edge indices, and the last comlumn is distance.
         """
 
-        data = self._seq_trajs(data)
+        
         num_trajs = len(data)
 
         if not graph_fn is None:
@@ -177,7 +176,13 @@ class Preprocessing:
         for traj in range(num_trajs):
             graph_traj_for_training = []
             graph_traj_for_projection = []
+            # print(data[traj].shape[0])
+            # print(len(data[traj][0]))
+            # print(data[traj][0].shape)
             for frame in range(data[traj].shape[0]):
+                print(frame)
+                print(len(data[traj][frame]))
+                print(data[traj][frame].shape)
                 graph = graph_fn(data[traj][frame], **kwargs)
                 graph_traj_for_training.append(graph)
                 graph_traj_for_projection.append(graph+np.array([num_atoms*frame,num_atoms*frame,0]).reshape(1,-1).repeat(len(graph),axis=0))
