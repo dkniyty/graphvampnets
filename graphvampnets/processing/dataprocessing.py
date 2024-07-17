@@ -54,9 +54,11 @@ class Preprocessing:
         for traj in range(num_trajs):
             tmp = []
             for i in range(num_atoms-1):
-                dist = np.sqrt(np.sum((data[traj][:,num_atoms-1,:] - data[traj][:,i,:])**2, axis=-1))
-                tmp.append(dist)
-            pw_data.append(np.stack(tmp,axis=1))      
+                for j in range(i+1, num_atoms):
+                    dist = np.sqrt(np.sum((data[traj][:,i,:] - data[traj][:,j,:])**2, axis=-1))
+                    tmp.append(dist)
+            pw_data.append(np.stack(tmp,axis=1))
+        
         return pw_data if num_trajs > 1 else pw_data[0]
     
     def create_dataset(self, data, lag_time):
