@@ -1,8 +1,15 @@
 import numpy as np
 import torch
 from tqdm import *
-from .utils import estimate_koopman_matrix, map_data
-from ..processing.dataprocessing import Postprocessing_vamp
+from importlib.machinery import SourceFileLoader
+
+utils_path = '/content/graphvampnets/graphvampnets/vamp/utils.py'
+utils_module = SourceFileLoader("utils", utils_path).load_module()
+process_path = '/content/graphvampnets/graphvampnets/processing/dataprocessing.py'
+process_module = SourceFileLoader("dataprocessing", process_path).load_module()
+
+from utils import estimate_koopman_matrix, map_data
+from dataprocessing import Postprocessing_vamp
 
 class VAMPNet_Estimator:
 
