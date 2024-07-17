@@ -2,8 +2,10 @@ import functools
 import numpy as np
 import sys
 import os
-
-from graphvampnets.utils import rao_blackwell_ledoit_wolf
+from importlib.machinery import SourceFileLoader
+utils_path = '/content/graphvampnets/graphvampnets/utils.py'
+utils_module = SourceFileLoader("utils", utils_path).load_module()
+from utils import rao_blackwell_ledoit_wolf
 
 class Preprocessing:
     """ Preprocess the original trajectories to create datasets for training.
