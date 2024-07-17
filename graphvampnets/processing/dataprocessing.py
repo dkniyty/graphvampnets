@@ -1,6 +1,6 @@
 import functools
 import numpy as np
-from graphvampnets.utils import rao_blackwell_ledoit_wolf
+from utils import rao_blackwell_ledoit_wolf
 
 class Preprocessing:
     """ Preprocess the original trajectories to create datasets for training.
