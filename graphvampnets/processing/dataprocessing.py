@@ -3,6 +3,11 @@ import numpy as np
 import sys
 import os
 
+current_dir = os.path.dirname(os.path.abspath(__file__))
+base_dir = os.path.abspath(os.path.join(current_dir, '..', '..'))
+if base_dir not in sys.path:
+    sys.path.append(base_dir)
+
 from graphvampnets.utils import rao_blackwell_ledoit_wolf
 
 class Preprocessing:
