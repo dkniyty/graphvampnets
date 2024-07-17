@@ -118,16 +118,17 @@ class Preprocessing:
         if pw_indices is None:
             pw_indices = []
             for i in range(num_atoms-1):
-                pw_indices.append(np.array([num_atoms-1, i]))
+                for j in range(i+1, num_atoms):
+                    pw_indices.append(np.array([i,j]))
             pw_indices = np.array(pw_indices)
 
         # print(len(pw_indices))
         # print(len(pw_data_frame))
 
-        # assert len(pw_indices) == len(pw_data_frame)
+        assert len(pw_indices) == len(pw_data_frame)
         assert int(np.min(pw_indices)) == 0
         assert int(np.max(pw_indices) + 1) == num_atoms
-        # assert int(num_atoms*(num_atoms-1)/2) == len(pw_indices)
+        assert int(num_atoms*(num_atoms-1)/2) == len(pw_indices)
 
         pw_matrix = np.zeros((num_atoms, num_atoms))
         for i in range(len(pw_data_frame)):
