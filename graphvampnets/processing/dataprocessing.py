@@ -3,10 +3,7 @@ import numpy as np
 import sys
 import os
 
-module_path = os.path.abspath(os.path.join('..', ''))
-if module_path not in sys.path:
-    sys.path.append(module_path)
-from utils import rao_blackwell_ledoit_wolf
+from graphvampnets.utils import rao_blackwell_ledoit_wolf
 
 class Preprocessing:
     """ Preprocess the original trajectories to create datasets for training.
