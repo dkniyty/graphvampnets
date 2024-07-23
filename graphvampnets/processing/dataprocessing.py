@@ -3,7 +3,7 @@ import numpy as np
 import sys
 import os
 from importlib.machinery import SourceFileLoader
-utils_path = '/content/graphvampnets/graphvampnets/utils.py'
+utils_path = '/workspace/graphvampnets/graphvampnets/utils.py'
 utils_module = SourceFileLoader("utils", utils_path).load_module()
 from utils import rao_blackwell_ledoit_wolf
 
