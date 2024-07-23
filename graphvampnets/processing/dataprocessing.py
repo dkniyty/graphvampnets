@@ -188,9 +188,9 @@ class Preprocessing:
             # print(len(data[traj][0]))
             # print(data[traj][0].shape)
             for frame in range(data[traj].shape[0]):
-                print(frame)
-                print(len(data[traj][frame]))
-                print(data[traj][frame].shape)
+                # print(frame)
+                # print(len(data[traj][frame]))
+                # print(data[traj][frame].shape)
                 graph = graph_fn(data[traj][frame], **kwargs)
                 graph_traj_for_training.append(graph)
                 graph_traj_for_projection.append(graph+np.array([num_atoms*frame,num_atoms*frame,0]).reshape(1,-1).repeat(len(graph),axis=0))
