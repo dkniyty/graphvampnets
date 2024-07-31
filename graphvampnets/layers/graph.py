@@ -55,9 +55,9 @@ class ContinuousFilterConv(nn.Module):
         self.hidden_emb_dim = hidden_emb_dim
 
     def forward(self, hidden_atom_emb, edge_emb, edge_list):
-        print(f"hidden_atom_emb shape: {hidden_atom_emb.shape}")
-        print(f"edge_emb shape: {edge_emb.shape}")
-        print(f"edge_list shape: {edge_list.shape}")
+        # print(f"hidden_atom_emb shape: {hidden_atom_emb.shape}")
+        # print(f"edge_emb shape: {edge_emb.shape}")
+        # print(f"edge_list shape: {edge_list.shape}")
         # hidden_atom_emb: [num_atoms_over_batches, hidden_emb_dim]
         # edge_emb: [num_edges, edge_emb_dim]
         # edge_list: [num_edges, 2]
@@ -102,6 +102,11 @@ class InteractionBlock(nn.Module):
     def forward(self, atom_emb, edge_emb, edge_list):
 
         hidden_atom_emb = self.initial_dense(atom_emb)
+        
+        print(f"hidden_atom_emb shape: {hidden_atom_emb.shape}")
+        print(f"edge_emb shape: {edge_emb.shape}")
+        print(f"edge_list shape: {edge_list.shape}")
+        
         hidden_conv_atom_emb = self.cfconv(hidden_atom_emb, edge_emb, edge_list)
         output_atom_emb = self.output_dense(hidden_conv_atom_emb)
 
@@ -184,7 +189,9 @@ class GraphVAMPNetLayer(nn.Module):
     def forward(self, data):
         
         num_nodes = data[-1,-1]
+        print(f"num_nodes: {num_nodes}")
         num_graphs = int(num_nodes // self._num_atoms)
+        print(f"num_graphs: {num_graphs}")
 
         edge_dist = data[:-1, -1].reshape((-1, 1)) # (num_edges, 1)
         edge_list = data[:-1, :2].to(torch.int64)
