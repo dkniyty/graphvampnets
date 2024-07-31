@@ -187,7 +187,7 @@ class GraphVAMPNetLayer(nn.Module):
         return self._graph_emb.detach()
 
     def forward(self, data):
-        
+        print(f"data shape: {data.shape}")
         num_nodes = data[-1,-1]
         print(f"num_nodes: {num_nodes}")
         num_graphs = int(num_nodes // self._num_atoms)
