@@ -56,8 +56,8 @@ class ContinuousFilterConv(nn.Module):
 
     def forward(self, hidden_atom_emb, edge_emb, edge_list):
 	print(f"hidden_atom_emb shape: {hidden_atom_emb.shape}")
-	print(f"edge_emb shape: {edge_emb.shape}")
-	print(f"edge_list shape: {edge_list.shape}")
+    print(f"edge_emb shape: {edge_emb.shape}")
+    print(f"edge_list shape: {edge_list.shape}")
 	    
         # hidden_atom_emb: [num_atoms_over_batches, hidden_emb_dim]
         # edge_emb: [num_edges, edge_emb_dim]
