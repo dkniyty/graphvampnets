@@ -188,13 +188,19 @@ class GraphVAMPNetLayer(nn.Module):
 
     def forward(self, data):
         print(f"data shape: {data.shape}")
-        num_nodes = data[-1,-1]
+        
+        # Ensure the edge_list is properly formatted
+        if len(data.shape) == 2:
+            edge_dist = data[:, -1].reshape((-1, 1))  # (num_edges, 1)
+            edge_list = data[:, :2].to(torch.int64)  # (num_edges, 2)
+        else:
+            raise ValueError("Unexpected data shape. Expected 2D tensor with edge list information.")
+
+        num_nodes = int(edge_list.max() + 1)
         print(f"num_nodes: {num_nodes}")
+        
         num_graphs = int(num_nodes // self._num_atoms)
         print(f"num_graphs: {num_graphs}")
-
-        edge_dist = data[:-1, -1].reshape((-1, 1)) # (num_edges, 1)
-        edge_list = data[:-1, :2].to(torch.int64)
 
         batch_atom_class_idx = self._atom_class_idx.repeat(num_graphs).to(device=edge_dist.device)
         atom_emb = self._atom_emb(batch_atom_class_idx) # (num_atoms_over_batches, atom_emb_dim)
