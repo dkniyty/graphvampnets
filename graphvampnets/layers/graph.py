@@ -103,9 +103,9 @@ class InteractionBlock(nn.Module):
 
         hidden_atom_emb = self.initial_dense(atom_emb)
         
-        print(f"hidden_atom_emb shape: {hidden_atom_emb.shape}")
-        print(f"edge_emb shape: {edge_emb.shape}")
-        print(f"edge_list shape: {edge_list.shape}")
+        # print(f"hidden_atom_emb shape: {hidden_atom_emb.shape}")
+        # print(f"edge_emb shape: {edge_emb.shape}")
+        # print(f"edge_list shape: {edge_list.shape}")
         
         hidden_conv_atom_emb = self.cfconv(hidden_atom_emb, edge_emb, edge_list)
         output_atom_emb = self.output_dense(hidden_conv_atom_emb)
@@ -187,7 +187,7 @@ class GraphVAMPNetLayer(nn.Module):
         return self._graph_emb.detach()
 
     def forward(self, data):
-        print(f"data shape: {data.shape}")
+        # print(f"data shape: {data.shape}")
         
         # Ensure the edge_list is properly formatted
         if len(data.shape) == 2:
@@ -197,10 +197,10 @@ class GraphVAMPNetLayer(nn.Module):
             raise ValueError("Unexpected data shape. Expected 2D tensor with edge list information.")
 
         num_nodes = int(edge_list.max() + 1)
-        print(f"num_nodes: {num_nodes}")
+        # print(f"num_nodes: {num_nodes}")
         
         num_graphs = int(num_nodes // self._num_atoms)
-        print(f"num_graphs: {num_graphs}")
+        # print(f"num_graphs: {num_graphs}")
 
         batch_atom_class_idx = self._atom_class_idx.repeat(num_graphs).to(device=edge_dist.device)
         atom_emb = self._atom_emb(batch_atom_class_idx) # (num_atoms_over_batches, atom_emb_dim)
